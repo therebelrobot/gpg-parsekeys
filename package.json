@@ -1,0 +1,29 @@
+{
+  "name": "gpg-parsekeys",
+  "version": "0.0.1",
+  "description": "A simple node module to parse PGP key information from an array of string inputs",
+  "main": "gpg-parsekeys.js",
+  "scripts": {
+    "test": "mocha"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/therebelrobot/gpg-parsekeys.git"
+  },
+  "keywords": [
+    "gpg",
+    "pgp",
+    "keys",
+    "parse"
+  ],
+  "author": "Trent Oswald <trentoswald@therebelrobot.com> (@therebelrobot)",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/therebelrobot/gpg-parsekeys/issues"
+  },
+  "homepage": "https://github.com/therebelrobot/gpg-parsekeys#readme",
+  "dependencies": {
+    "debug-log2": "^1.0.0",
+    "lodash": "^3.9.3"
+  }
+}
