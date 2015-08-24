@@ -1,9 +1,35 @@
 var debug = require('debug-log2')
 var _ = require('lodash')
+var htmlparser = require('htmlparser2')
 
-module.exports = function _parseKey(keyArray, secrets) {
+module.exports = function _parseKey (keyArray, secrets) {
   debug('_parseKey entered')
-  var allKeys = _.map(keyArray, function _parseKeyMap(key, index) {
+  if (_.isString(keyArray) && !_isHTML(keyArray)) {
+    keyArray = keyArray.split('\n\n')
+  }
+  if (_.isString(keyArray) && _isHTML(keyArray)) {
+    var parsed = []
+    var parser = new htmlparser.Parser({
+      ontext: function (text) {
+        parsed.push(text)
+      }
+    }, {
+      decodeEntities: true
+    })
+    parser.write(keyArray)
+    parser.end()
+    parsed = parsed.join('').split('Search results for')[2].split('\n')
+    parsed.shift()
+    parsed = parsed.join('\n').split('pub')
+    parsed = _.map(parsed, function (line, index) {
+      if (line.length > 0) {
+        return 'pub' + line
+      }
+      return ''
+    })
+    keyArray = parsed
+  }
+  var allKeys = _.map(keyArray, function _parseKeyMap (key, index) {
     key = key.split('\n')
     if (index === 0) {
       key.shift()
@@ -21,11 +47,11 @@ module.exports = function _parseKey(keyArray, secrets) {
       if (secrets && secrets.indexOf(keyprint) > -1) {
         type = 'secret'
       }
-      var uids = _.map(key, function _parseKeyMapUidMap(line) {
+      var uids = _.map(key, function _parseKeyMapUidMap (line) {
         if (line.match(/^uid*.*/)) {
           line = line.split('uid ')
           line.shift()
-          if (line.length == 1) {
+          if (line.length === 1) {
             line = line[0]
           } else {
             line = line.join('uid ')
@@ -48,8 +74,8 @@ module.exports = function _parseKey(keyArray, secrets) {
           return uid
         }
       })
-      var uids = _.without(uids, undefined)
-      sigs = _.map(key, function _parseKeyMapSigMap(line) {
+      uids = _.without(uids, undefined)
+      sigs = _.map(key, function _parseKeyMapSigMap (line) {
         if (line.match(/^sig*.*/)) {
           var sig = {}
           sig.id = line.match(/sig[3|2]?\s*([A-Z|0-9]{8})/)
@@ -72,7 +98,7 @@ module.exports = function _parseKey(keyArray, secrets) {
         }
       })
       var sigs = _.without(sigs, undefined)
-      var subs = _.map(key, function _parseKeyMapSubMap(line) {
+      var subs = _.map(key, function _parseKeyMapSubMap (line) {
         if (line.match(/^sub*.*/)) {
           var sub = {}
           sub.keyprint = line.match(/\/([A-Z|0-9]*)/)
@@ -101,4 +127,8 @@ module.exports = function _parseKey(keyArray, secrets) {
   })
   allKeys = _.without(allKeys, false)
   return allKeys
+}
+
+function _isHTML (string) {
+  return string.indexOf('<body') > -1
 }

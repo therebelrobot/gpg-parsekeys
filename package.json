@@ -4,7 +4,8 @@
   "description": "A simple node module to parse PGP key information from an array of string inputs",
   "main": "gpg-parsekeys.js",
   "scripts": {
-    "test": "mocha"
+    "pretest": "./node_modules/standard/bin/cmd.js",
+    "test": "./node_modules/istanbul/lib/cli.js cover _mocha --"
   },
   "repository": {
     "type": "git",
@@ -24,6 +25,13 @@
   "homepage": "https://github.com/therebelrobot/gpg-parsekeys#readme",
   "dependencies": {
     "debug-log2": "^1.0.0",
+    "htmlparser2": "^3.8.3",
     "lodash": "^3.9.3"
+  },
+  "devDependencies": {
+    "chai": "^3.2.0",
+    "istanbul": "^0.3.18",
+    "mocha": "^2.2.5",
+    "standard": "^5.1.0"
   }
 }
