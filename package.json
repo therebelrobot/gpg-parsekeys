@@ -1,6 +1,6 @@
 {
   "name": "gpg-parsekeys",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "A simple node module to parse PGP key information from an array of string inputs",
   "main": "gpg-parsekeys.js",
   "scripts": {
